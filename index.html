@@ -93,12 +93,6 @@
         .whatsapp-button:hover {
             background-color: #128C7E;
         }
-        .pdf-button {
-            background-color: #2196F3;
-        }
-        .pdf-button:hover {
-            background-color: #1976D2;
-        }
     </style>
 </head>
 <body>
@@ -149,6 +143,7 @@
         let currentIndex = 0;
         let isPlaying = false;
         let utterance = null;
+        let playbackInterval = null;
 
         async function startPresentation() {
             const germanText = document.getElementById('germanText').value;
@@ -163,7 +158,6 @@
             document.getElementById('mainContent').classList.add('hidden');
             document.getElementById('presentationSection').classList.remove('hidden');
             currentIndex = 0;
-            isPlaying = true;
             displayCurrentSentence();
         }
 
@@ -185,6 +179,10 @@
 
                 utterance = new SpeechSynthesisUtterance(sentence);
                 utterance.lang = 'de-DE';
+                utterance.onerror = function(event) {
+                    console.error('Error occurred while speaking:', event.error);
+                    alert('Fehler beim Abspielen des Textes.');
+                };
                 utterance.onend = () => {
                     if (isPlaying) {
                         nextSentence(); // Automatically go to the next sentence when done
@@ -209,51 +207,36 @@
         }
 
         function togglePlayback() {
-            isPlaying = !isPlaying;
             if (isPlaying) {
-                displayCurrentSentence();
-            } else {
                 window.speechSynthesis.cancel();
+                isPlaying = false;
+                document.getElementById('stopBtn').innerText = 'Fortsetzen';
+                if (playbackInterval) {
+                    clearInterval(playbackInterval);
+                    playbackInterval = null;
+                }
+            } else {
+                isPlaying = true;
+                document.getElementById('stopBtn').innerText = 'Stoppen';
+                displayCurrentSentence();
+                playbackInterval = setInterval(() => {
+                    if (isPlaying && currentIndex < sentences.length - 1) {
+                        nextSentence();
+                    }
+                }, 5000); // Change the interval as needed
             }
         }
 
         async function translateText(text, targetLang) {
             const services = [
-                'https://libretranslate.de/translate',
-                'https://api.mymemory.translated.net/get'
-            ];
-
-            for (const service of services) {
-                try {
-                    let response, data;
-                    if (service === 'https://libretranslate.de/translate') {
-                        response = await fetch(service, {
+                {
+                    url: 'https://libretranslate.de/translate',
+                    request: async (text, targetLang) => {
+                        return fetch(services[0].url, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                q: text,
-                                source: 'de',
-                                target: targetLang,
-                                format: 'text'
-                            })
-                        });
-                        data = await response.json();
-                        if (data.translatedText) {
-                            return data.translatedText;
-                        }
-                    } else if (service === 'https://api.mymemory.translated.net/get') {
-                        response = await fetch(`${service}?q=${encodeURIComponent(text)}&langpair=de|${targetLang}`);
-                        data = await response.json();
-                        if (data.responseData) {
-                            return data.responseData.translatedText;
-                        }
+                            body: JSON.stringify({ q: text, source: 'de', target: targetLang, format: 'text' })
+                        }).then(res => res.json()).then(data => data.translatedText);
                     }
-                } catch (error) {
-                    console.error(`Error using service ${service}:`, error);
-                }
-            }
-            return 'Übersetzung nicht verfügbar.';
-        }
-    </script>
-</body>
-</html>
+                },
+                {
