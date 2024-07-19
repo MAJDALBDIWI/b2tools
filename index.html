@@ -168,7 +168,7 @@
         async function displayCurrentSentence() {
             if (currentIndex < sentences.length) {
                 const sentence = sentences[currentIndex];
-                const translation = await translateText(sentence, document.getElementById('translationLang').value);
+                const translation = await getTranslation(sentence, document.getElementById('translationLang').value);
 
                 document.getElementById('currentSentence').innerText = sentence;
                 document.getElementById('currentTranslation').innerText = translation;
@@ -195,48 +195,4 @@
         function prevSentence() {
             if (currentIndex > 0) {
                 currentIndex--;
-                displayCurrentSentence();
-            }
-        }
-
-        function nextSentence() {
-            if (currentIndex < sentences.length - 1) {
-                currentIndex++;
-                displayCurrentSentence();
-            }
-        }
-
-        function togglePlayback() {
-            if (isPlaying) {
-                window.speechSynthesis.cancel();
-                isPlaying = false;
-                document.getElementById('stopBtn').innerText = 'Fortsetzen';
-                if (playbackInterval) {
-                    clearInterval(playbackInterval);
-                    playbackInterval = null;
-                }
-            } else {
-                isPlaying = true;
-                document.getElementById('stopBtn').innerText = 'Stoppen';
-                displayCurrentSentence();
-                playbackInterval = setInterval(() => {
-                    if (isPlaying && currentIndex < sentences.length - 1) {
-                        nextSentence();
-                    }
-                }, 5000); // Change the interval as needed
-            }
-        }
-
-        async function translateText(text, targetLang) {
-            const services = [
-                {
-                    url: 'https://libretranslate.de/translate',
-                    request: async (text, targetLang) => {
-                        return fetch(services[0].url, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ q: text, source: 'de', target: targetLang, format: 'text' })
-                        }).then(res => res.json()).then(data => data.translatedText);
-                    }
-                },
-                {
+    
