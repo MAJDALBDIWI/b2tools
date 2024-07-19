@@ -93,6 +93,12 @@
         .whatsapp-button:hover {
             background-color: #128C7E;
         }
+        .pdf-button {
+            background-color: #2196F3;
+        }
+        .pdf-button:hover {
+            background-color: #1976D2;
+        }
     </style>
 </head>
 <body>
@@ -130,8 +136,6 @@
                 <li><strong>Klicken Sie auf "Start Präsentation":</strong> Dies wird den deutschen Text automatisch in Sätze aufteilen, übersetzen und diese in der ausgewählten Übersetzung anzeigen.</li>
                 <li><strong>Verwenden Sie die Tasten "Vorherige" und "Nächste":</strong> Um zwischen den Sätzen zu wechseln. Der Text wird in deutscher Sprache vorgelesen und die Übersetzung angezeigt.</li>
             </ol>
-            <h2>Service:</h2>
-            <p>Dieser Service ermöglicht es Ihnen, Text in einer Sprache einzufügen, ihn in eine andere Sprache zu übersetzen und ihn in einer Präsentation anzuhören.</p>
             <h2>Erstellt von:</h2>
             <p>Majd Albdiwi</p>
             <p>Telefon: +4917624128422</p>
@@ -183,7 +187,7 @@
                 utterance.lang = 'de-DE';
                 utterance.onend = () => {
                     if (isPlaying) {
-                        playbackTimeout = setTimeout(() => nextSentence(), 0); // Go to next sentence immediately
+                        nextSentence(); // Automatically go to the next sentence when done
                     }
                 };
                 window.speechSynthesis.speak(utterance);
@@ -193,7 +197,6 @@
         function prevSentence() {
             if (currentIndex > 0) {
                 currentIndex--;
-                clearTimeout(playbackTimeout); // Stop automatic playback when manually navigating
                 displayCurrentSentence();
             }
         }
@@ -201,21 +204,16 @@
         function nextSentence() {
             if (currentIndex < sentences.length - 1) {
                 currentIndex++;
-                clearTimeout(playbackTimeout); // Stop automatic playback when manually navigating
                 displayCurrentSentence();
             }
         }
 
-        let playbackTimeout = null;
         function togglePlayback() {
+            isPlaying = !isPlaying;
             if (isPlaying) {
-                window.speechSynthesis.cancel();
-                isPlaying = false;
-                document.getElementById('stopBtn').innerText = 'Fortsetzen';
+                displayCurrentSentence();
             } else {
-                isPlaying = true;
-                document.getElementById('stopBtn').innerText = 'Stoppen';
-                displayCurrentSentence(); // Resume from current index
+                window.speechSynthesis.cancel();
             }
         }
 
@@ -254,7 +252,7 @@
                     console.error(`Error using service ${service}:`, error);
                 }
             }
-            return 'Übersetzung nicht verfügbar.'; // Fallback text
+            return 'Übersetzung nicht verfügbar.';
         }
     </script>
 </body>
