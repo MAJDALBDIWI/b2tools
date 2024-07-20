@@ -1,30 +1,25 @@
 {
   "de": {
-    "welcome": "Willkommen",
     "sentence1": "Dies ist ein Beispieltext.",
     "sentence2": "Hier ist noch ein Satz.",
     "sentence3": "Wir hoffen, dass dies hilfreich ist."
   },
   "en": {
-    "welcome": "Welcome",
     "sentence1": "This is a sample text.",
     "sentence2": "Here is another sentence.",
     "sentence3": "We hope this is helpful."
   },
   "ar": {
-    "welcome": "أهلاً وسهلاً",
     "sentence1": "هذه نصوص تجريبية.",
     "sentence2": "إليك جملة أخرى.",
     "sentence3": "نأمل أن يكون هذا مفيداً."
   },
   "tr": {
-    "welcome": "Hoşgeldiniz",
     "sentence1": "Bu bir örnek metindir.",
     "sentence2": "İşte başka bir cümle.",
     "sentence3": "Umarız bu faydalı olur."
   },
   "uk": {
-    "welcome": "Ласкаво просимо",
     "sentence1": "Це зразковий текст.",
     "sentence2": "Ось ще одне речення.",
     "sentence3": "Сподіваємось, це буде корисно."
