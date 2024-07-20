@@ -1,0 +1,27 @@
+{
+  "de": {
+    "Dies ist ein Beispieltext": "Dies ist ein Beispieltext.",
+    "Hier ist noch ein Satz": "Hier ist noch ein Satz.",
+    "Wir hoffen, dass dies hilfreich ist": "Wir hoffen, dass dies hilfreich ist."
+  },
+  "en": {
+    "Dies ist ein Beispieltext": "This is a sample text.",
+    "Hier ist noch ein Satz": "Here is another sentence.",
+    "Wir hoffen, dass dies hilfreich ist": "We hope this is helpful."
+  },
+  "ar": {
+    "Dies ist ein Beispieltext": "هذه نصوص تجريبية.",
+    "Hier ist noch ein Satz": "إليك جملة أخرى.",
+    "Wir hoffen, dass dies hilfreich ist": "نأمل أن يكون هذا مفيداً."
+  },
+  "tr": {
+    "Dies ist ein Beispieltext": "Bu bir örnek metindir.",
+    "Hier ist noch ein Satz": "İşte başka bir cümle.",
+    "Wir hoffen, dass dies hilfreich ist": "Umarız bu faydalı olur."
+  },
+  "uk": {
+    "Dies ist ein Beispieltext": "Це зразковий текст.",
+    "Hier ist noch ein Satz": "Ось ще одне речення.",
+    "Wir hoffen, dass dies hilfreich ist": "Сподіваємось, це буде корисно."
+  }
+}
