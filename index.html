@@ -1,34 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Translation and Speech Tool</title>
+    <title>Interaktive Satzleser</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
-        button { margin-right: 5px; }
-        #currentSentence { margin-top: 20px; }
-        .highlight { background-color: yellow; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        select, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #3498db;
+            color: #fff;
+        }
+        select {
+            background-color: #2980b9;
+        }
+        button:hover, select:hover {
+            background-color: #1d74d1;
+            cursor: pointer;
+        }
+        #currentSentence {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            min-height: 50px;
+        }
+        #translation {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .highlight {
+            background-color: #ffff99;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
-    <h1>Translation and Speech Tool</h1>
-    <textarea id="textInput" placeholder="Enter text here..."></textarea>
-    <br>
-    <select id="languageSelect">
-        <option value="ar">Arabic</option>
-        <option value="uk">Ukrainian</option>
-        <option value="tr">Turkish</option>
-    </select>
-    <button onclick="processText()">Process Text</button>
-    <br>
-    <button onclick="previousSentence()">Previous</button>
-    <button onclick="nextSentence()">Next</button>
-    <button onclick="speakText()">Speak</button>
-    <button onclick="stopSpeech()">Stop Speech</button>
-    <div id="currentSentence"></div>
-    <div id="result"></div>
+    <div class="container">
+        <h1>Interaktive Satzleser</h1>
+        <textarea id="textInput" placeholder="Geben Sie hier den Text ein..."></textarea>
+        <br>
+        <select id="languageSelect">
+            <option value="de">Deutsch</option>
+            <option value="en">Englisch</option>
+            <option value="fr">Französisch</option>
+        </select>
+        <button onclick="processText()">Text verarbeiten</button>
+        <br>
+        <button onclick="previousSentence()">Vorherige</button>
+        <button onclick="nextSentence()">Nächste</button>
+        <button onclick="speakText()">Sprechen</button>
+        <button onclick="stopSpeech()">Stoppen</button>
+        <div id="currentSentence"></div>
+        <div id="translation"></div>
+    </div>
 
     <script>
         const speechSynthesis = window.speechSynthesis;
@@ -42,33 +99,36 @@
             sentences = splitTextIntoSentences(text);
             currentIndex = 0;
             displaySentence(sentences[currentIndex]);
-            translateSentences(sentences, targetLang);
+            translateSentence(sentences[currentIndex], targetLang);
         }
 
         function splitTextIntoSentences(text) {
-            // Simple sentence splitting by periods. This can be improved with more sophisticated parsing.
             return text.split('.').map(sentence => sentence.trim()).filter(sentence => sentence.length > 0);
         }
 
-        async function translateSentences(sentences, targetLang) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = ''; // Clear previous results
-
-            for (const sentence of sentences) {
-                const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(sentence)}&langpair=en|${targetLang}`);
-                const data = await response.json();
-                resultDiv.innerHTML += `<p><strong>${sentence}</strong>: ${data.responseData.translatedText}</p>`;
-            }
+        async function translateSentence(sentence, targetLang) {
+            const resultDiv = document.getElementById('translation');
+            const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(sentence)}&langpair=de|${targetLang}`);
+            const data = await response.json();
+            resultDiv.innerHTML = `<p><strong>Übersetzung:</strong> ${data.responseData.translatedText}</p>`;
         }
 
         function displaySentence(sentence) {
-            document.getElementById('currentSentence').innerHTML = `<p class="highlight">${sentence}</p>`;
+            const currentSentenceDiv = document.getElementById('currentSentence');
+            currentSentenceDiv.innerHTML = '';
+            let words = sentence.split(' ');
+            words.forEach((word, index) => {
+                setTimeout(() => {
+                    currentSentenceDiv.innerHTML += `<span class="highlight">${word}</span> `;
+                }, index * 500); // Adjust timing for word display
+            });
         }
 
         function nextSentence() {
             if (currentIndex < sentences.length - 1) {
                 currentIndex++;
                 displaySentence(sentences[currentIndex]);
+                translateSentence(sentences[currentIndex], document.getElementById('languageSelect').value);
                 if (utterance) {
                     utterance.text = sentences[currentIndex];
                     speechSynthesis.speak(utterance);
@@ -80,6 +140,7 @@
             if (currentIndex > 0) {
                 currentIndex--;
                 displaySentence(sentences[currentIndex]);
+                translateSentence(sentences[currentIndex], document.getElementById('languageSelect').value);
                 if (utterance) {
                     utterance.text = sentences[currentIndex];
                     speechSynthesis.speak(utterance);
@@ -88,16 +149,13 @@
         }
 
         function speakText() {
-            if (sentences.length === 0) return; // No sentences to speak
+            if (sentences.length === 0) return;
 
             if (utterance) {
-                speechSynthesis.cancel(); // Stop any current speech
+                speechSynthesis.cancel();
             }
             utterance = new SpeechSynthesisUtterance(sentences[currentIndex]);
-            utterance.onboundary = event => {
-                document.getElementById('currentSentence').innerHTML = `<p class="highlight">${sentences[currentIndex].substring(event.charIndex, event.charIndex + event.charLength)}</p>`;
-            };
-            utterance.lang = 'en-US'; // You can set this based on user language selection
+            utterance.lang = 'de-DE'; // Set this based on user language selection
             speechSynthesis.speak(utterance);
         }
 
