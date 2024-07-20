@@ -5,94 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ein Tool zum Speichern von Texten im Gehirn</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-        header {
-            background-color: #00796b;
-            color: white;
-            padding: 20px 0;
-            font-size: 2.5em;
-            font-weight: bold;
-            border-bottom: 4px solid #004d40;
-        }
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-        textarea, select, button {
-            margin: 10px;
-            padding: 12px;
-            font-size: 1em;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-        button {
-            background-color: #00796b;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #004d40;
-        }
-        .translation, .sentence {
-            margin: 20px;
-            padding: 15px;
-            border-radius: 10px;
-        }
-        .translation {
-            background-color: #e8f5e9;
-            font-size: 1.2em;
-        }
-        .sentence {
-            background-color: #b2dfdb;
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-        .hidden {
-            display: none;
-        }
-        .controls {
-            margin: 20px 0;
-        }
-        .controls button {
-            margin: 0 10px;
-            padding: 10px 20px;
-        }
-        .controls .active {
-            background-color: #004d40;
-        }
-        .controls .active:hover {
-            background-color: #003d33;
-        }
-        .info {
-            text-align: left;
-            margin: 20px 0;
-        }
-        .whatsapp-button {
-            display: inline-block;
-            background-color: #25D366;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 1em;
-            margin-top: 20px;
-        }
-        .whatsapp-button:hover {
-            background-color: #128C7E;
-        }
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 800px; margin: auto; padding: 20px; }
+        .hidden { display: none; }
+        textarea { width: 100%; }
+        .controls button { margin: 5px; }
+        .whatsapp-button { display: inline-block; padding: 10px 20px; color: #fff; background-color: #25D366; text-decoration: none; border-radius: 5px; }
+        .whatsapp-button:hover { background-color: #128C7E; }
     </style>
 </head>
 <body>
@@ -100,7 +19,7 @@
 
     <div id="mainContent" class="container">
         <h2>Text und Spracheinstellungen</h2>
-        <textarea id="germanText" placeholder="Geben Sie hier den gesamten deutschen Text ein..." rows="6" cols="60"></textarea><br>
+        <textarea id="germanText" placeholder="Geben Sie hier den gesamten deutschen Text ein..." rows="6"></textarea><br>
         <label for="translationLang">Wählen Sie die Übersetzungssprache:</label>
         <select id="translationLang">
             <option value="ar">Arabisch</option>
@@ -228,47 +147,53 @@
         }
 
         async function getTranslation(text, targetLang) {
-            const services = [
-                {
-                    url: 'https://libretranslate.de/translate',
-                    request: async (text, targetLang) => {
-                        try {
-                            let response = await fetch(services[0].url, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ q: text, source: 'de', target: targetLang, format: 'text' })
-                            });
-                            let data = await response.json();
-                            return data.translatedText;
-                        } catch (error) {
-                            console.error('LibreTranslate Error:', error);
-                            return text; // Fallback to original text if translation fails
-                        }
-                    }
-                },
-                {
-                    url: 'https://api.mymemory.translated.net/get',
-                    request: async (text, targetLang) => {
-                        try {
-                            let response = await fetch(`${services[1].url}?q=${encodeURIComponent(text)}&langpair=de|${targetLang}`);
-                            let data = await response.json();
-                            return data.responseData.translatedText;
-                        } catch (error) {
-                            console.error('MyMemory Error:', error);
-                            return text; // Fallback to original text if translation fails
-                        }
-                    }
-                }
-            ];
+            try {
+                // Attempt translation using multiple sources
+                const libreTranslateUrl = 'https://libretranslate.de/translate';
+                const otherSourceUrl = 'https://api-free.deepl.com/v2/translate';
 
-            for (let service of services) {
-                let translation = await service.request(text, targetLang);
-                if (translation && translation.trim()) {
-                    return translation;
+                // First, try LibreTranslate
+                let response = await fetch(libreTranslateUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        q: text,
+                        source: 'de',
+                        target: targetLang,
+                        format: 'text'
+                    })
+                });
+
+                let data = await response.json();
+                if (data.translatedText) {
+                    return data.translatedText;
                 }
+
+                // Fallback to another service
+                response = await fetch(otherSourceUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': 'DeepL-Auth-Key YOUR_API_KEY' // Replace with actual API Key if needed
+                    },
+                    body: new URLSearchParams({
+                        text: text,
+                        source_lang: 'DE',
+                        target_lang: targetLang
+                    })
+                });
+
+                data = await response.json();
+                if (data.translations && data.translations[0]) {
+                    return data.translations[0].text;
+                }
+
+                // If both services fail, return the original text
+                return text;
+            } catch (error) {
+                console.error('Translation Error:', error);
+                return text; // Fallback to original text if translation fails
             }
-
-            return text; // Return original text if no translation is available
         }
     </script>
 </body>
