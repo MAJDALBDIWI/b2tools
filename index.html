@@ -84,13 +84,12 @@
             <option value="ar">العربية</option>
             <option value="tr">Türkçe</option>
             <option value="uk">Українська</option>
-            <!-- Add more languages as needed -->
         </select>
         <br>
         <button onclick="processText()">Präsentieren</button>
         <button onclick="previousSentence()">Vorherige</button>
         <button onclick="nextSentence()">Nächste</button>
-        <button onclick="stopSpeech()">Stoppen</button>
+        <button onclick="toggleSpeech()">Stoppen</button>
         <div id="currentSentence"></div>
         <div id="translation"></div>
     </div>
@@ -154,7 +153,7 @@
 
             if (currentIndex < sentences.length) {
                 utterance = new SpeechSynthesisUtterance(sentences[currentIndex]);
-                utterance.lang = getLangCode(); // Use this function to get the correct language code
+                utterance.lang = 'de-DE'; // Always use German for speech
                 utterance.onend = () => {
                     if (!isStopped) {
                         currentIndex++;
@@ -166,18 +165,6 @@
                     }
                 };
                 speechSynthesis.speak(utterance);
-            }
-        }
-
-        function getLangCode() {
-            const lang = document.getElementById('languageSelect').value;
-            switch(lang) {
-                case 'de': return 'de-DE';
-                case 'en': return 'en-US';
-                case 'ar': return 'ar-EG';
-                case 'tr': return 'tr-TR';
-                case 'uk': return 'uk-UA';
-                default: return 'en-US';
             }
         }
 
@@ -205,11 +192,14 @@
             }
         }
 
-        function stopSpeech() {
-            if (utterance) {
+        function toggleSpeech() {
+            if (speechSynthesis.speaking) {
                 speechSynthesis.cancel();
+                isStopped = true;
+            } else {
+                isStopped = false;
+                speakSentence();
             }
-            isStopped = true;
         }
     </script>
 </body>
