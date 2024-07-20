@@ -176,6 +176,8 @@
                 if (utterance) {
                     utterance.text = sentences[currentIndex];
                     speechSynthesis.speak(utterance);
+                } else {
+                    speakSentence();
                 }
             }
         }
@@ -188,6 +190,8 @@
                 if (utterance) {
                     utterance.text = sentences[currentIndex];
                     speechSynthesis.speak(utterance);
+                } else {
+                    speakSentence();
                 }
             }
         }
