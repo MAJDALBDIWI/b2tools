@@ -1,27 +1,26 @@
 {
   "de": {
-    "sentence1": "Dies ist ein Beispieltext.",
-    "sentence2": "Hier ist noch ein Satz.",
-    "sentence3": "Wir hoffen, dass dies hilfreich ist."
+    "Dies ist ein Beispieltext": "Dies ist ein Beispieltext.",
+    "Hier ist noch ein Satz": "Hier ist noch ein Satz.",
+    "Wir hoffen, dass dies hilfreich ist": "Wir hoffen, dass dies hilfreich ist."
   },
   "en": {
-    "sentence1": "This is a sample text.",
-    "sentence2": "Here is another sentence.",
-    "sentence3": "We hope this is helpful."
+    "Dies ist ein Beispieltext": "This is a sample text.",
+    "Hier ist noch ein Satz": "Here is another sentence.",
+    "Wir hoffen, dass dies hilfreich ist": "We hope this is helpful."
   },
   "ar": {
-    "sentence1": "هذه نصوص تجريبية.",
-    "sentence2": "إليك جملة أخرى.",
-    "sentence3": "نأمل أن يكون هذا مفيداً."
+    "Dies ist ein Beispieltext": "هذه نصوص تجريبية.",
+    "Hier ist noch ein Satz": "إليك جملة أخرى.",
+    "Wir hoffen, dass dies hilfreich ist": "نأمل أن يكون هذا مفيداً."
   },
   "tr": {
-    "sentence1": "Bu bir örnek metindir.",
-    "sentence2": "İşte başka bir cümle.",
-    "sentence3": "Umarız bu faydalı olur."
+    "Dies ist ein Beispieltext": "Bu bir örnek metindir.",
+    "Hier ist noch ein Satz": "İşte başka bir cümle.",
+    "Wir hoffen, dass dies hilfreich ist": "Umarız bu faydalı olur."
   },
   "uk": {
-    "sentence1": "Це зразковий текст.",
-    "sentence2": "Ось ще одне речення.",
-    "sentence3": "Сподіваємось, це буде корисно."
-  }
-}
+    "Dies ist ein Beispieltext": "Це зразковий текст.",
+    "Hier ist noch ein Satz": "Ось ще одне речення.",
+    "Wir hoffen, dass dies hilfreich ist": "Сподіваємось, це буде корисно."
+ 
